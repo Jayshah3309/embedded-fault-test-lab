@@ -18,7 +18,9 @@ The test suite deliberately creates a failed scenario while checking that wrong 
 
 ## CI
 
-The committed workflow runs Python 3.10 and 3.12 on Ubuntu 24.04, saves generated reports as Actions artifacts, and compiles the UNO sketch against AVR core 1.8.6. Actual run links/status will be recorded after inspection; a workflow file alone is not a passing result.
+The committed workflow runs Python 3.10 and 3.12 on Ubuntu 24.04, saves generated reports as Actions artifacts, and compiles the UNO sketch against AVR core 1.8.6. [Verified CI run](https://github.com/Jayshah3309/embedded-fault-test-lab/actions/runs/39779425856), commit `c4506268f47067d03199e2665e24604b1e19bdb7`, completed successfully on 22 October 2026: **host (3.10), host (3.12), and uno all passed**. Each host job ran the nine harness tests plus all 20 scenarios and three mutation checks with undefined-behavior instrumentation. Both report bundles are available under the run’s Artifacts section (`fault-lab-python-3.10` and `fault-lab-python-3.12`).
+
+GitHub emitted Node 20 deprecation warnings for the setup/checkout/artifact actions; those actions ran successfully under the runner’s compatibility behavior. Compilation confirms target compatibility, not physical validation.
 
 ## What the evidence does not establish
 
