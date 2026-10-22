@@ -1,0 +1,1787 @@
+{
+  "schema_version": 1,
+  "scenarios": [
+    {
+      "name": "nominal-arm-stop-reset",
+      "purpose": "Explicit reset and separate arm; stop cannot be bypassed by A.",
+      "steps": [
+        {
+          "time_ms": 0,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 1
+          }
+        },
+        {
+          "time_ms": 100,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 2
+          }
+        },
+        {
+          "time_ms": 200,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "READY",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 210,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 220,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "X",
+          "expect": {
+            "state": "STOPPED",
+            "permit": false,
+            "faults": 0
+          }
+        },
+        {
+          "time_ms": 230,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "STOPPED",
+            "permit": false,
+            "faults": 0
+          }
+        },
+        {
+          "time_ms": 240,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "READY",
+            "permit": false,
+            "faults": 0
+          }
+        },
+        {
+          "time_ms": 250,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "sensor-invalid-recovery",
+      "purpose": "Invalid sample disables permit; three healthy samples and explicit reset restore READY.",
+      "steps": [
+        {
+          "time_ms": 0,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 1
+          }
+        },
+        {
+          "time_ms": 100,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 2
+          }
+        },
+        {
+          "time_ms": 200,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "READY",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 210,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 220,
+          "fresh": true,
+          "valid": false,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 1,
+            "healthy_samples": 0
+          }
+        },
+        {
+          "time_ms": 230,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 1,
+            "healthy_samples": 1
+          }
+        },
+        {
+          "time_ms": 240,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "-",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 1,
+            "healthy_samples": 2
+          }
+        },
+        {
+          "time_ms": 250,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "READY",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 260,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "range-negative",
+      "purpose": "Out-of-range readings latch RANGE.",
+      "steps": [
+        {
+          "time_ms": 0,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 1
+          }
+        },
+        {
+          "time_ms": 100,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 2
+          }
+        },
+        {
+          "time_ms": 200,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "READY",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 210,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 220,
+          "fresh": true,
+          "valid": true,
+          "value": -1,
+          "stop_closed": true,
+          "command": "-",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 2,
+            "healthy_samples": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "range-high",
+      "purpose": "Out-of-range readings latch RANGE.",
+      "steps": [
+        {
+          "time_ms": 0,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 1
+          }
+        },
+        {
+          "time_ms": 100,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 2
+          }
+        },
+        {
+          "time_ms": 200,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "READY",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 210,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 220,
+          "fresh": true,
+          "valid": true,
+          "value": 1001,
+          "stop_closed": true,
+          "command": "-",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 2,
+            "healthy_samples": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "sensor-stale-boundary",
+      "purpose": "499 ms retains permit; 500 ms disables it.",
+      "steps": [
+        {
+          "time_ms": 0,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 1
+          }
+        },
+        {
+          "time_ms": 100,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 2
+          }
+        },
+        {
+          "time_ms": 200,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "READY",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 210,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 300,
+          "fresh": false,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0
+          }
+        },
+        {
+          "time_ms": 500,
+          "fresh": false,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0
+          }
+        },
+        {
+          "time_ms": 709,
+          "fresh": false,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0
+          }
+        },
+        {
+          "time_ms": 710,
+          "fresh": false,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "-",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 4,
+            "healthy_samples": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "late-sample-cannot-hide-stale",
+      "purpose": "A replacement at the expired deadline cannot erase an observed gap.",
+      "steps": [
+        {
+          "time_ms": 0,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 1
+          }
+        },
+        {
+          "time_ms": 100,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 2
+          }
+        },
+        {
+          "time_ms": 200,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "READY",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 210,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 710,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 12,
+            "healthy_samples": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "heartbeat-boundary",
+      "purpose": "299 ms remains active; a heartbeat at 300 ms is late and latches the fault.",
+      "steps": [
+        {
+          "time_ms": 0,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 1
+          }
+        },
+        {
+          "time_ms": 100,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 2
+          }
+        },
+        {
+          "time_ms": 200,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "READY",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 210,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 399,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "-",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0
+          }
+        },
+        {
+          "time_ms": 400,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 8
+          }
+        }
+      ]
+    },
+    {
+      "name": "unknown-command",
+      "purpose": "An unsupported command byte latches BAD_COMMAND.",
+      "steps": [
+        {
+          "time_ms": 0,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 1
+          }
+        },
+        {
+          "time_ms": 100,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 2
+          }
+        },
+        {
+          "time_ms": 200,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "READY",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 210,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 220,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "?",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 64
+          }
+        }
+      ]
+    },
+    {
+      "name": "over-limit-boundary",
+      "purpose": "799 is allowed while active; 800 trips.",
+      "steps": [
+        {
+          "time_ms": 0,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 1
+          }
+        },
+        {
+          "time_ms": 100,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 2
+          }
+        },
+        {
+          "time_ms": 200,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "READY",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 210,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 220,
+          "fresh": true,
+          "valid": true,
+          "value": 799,
+          "stop_closed": true,
+          "command": "-",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0,
+            "healthy_samples": 0
+          }
+        },
+        {
+          "time_ms": 230,
+          "fresh": true,
+          "valid": true,
+          "value": 800,
+          "stop_closed": true,
+          "command": "-",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 16,
+            "healthy_samples": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "hysteresis-recovery-band",
+      "purpose": "701 cannot qualify for reset; three readings at 700 can.",
+      "steps": [
+        {
+          "time_ms": 0,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 1
+          }
+        },
+        {
+          "time_ms": 100,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 2
+          }
+        },
+        {
+          "time_ms": 200,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "READY",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 210,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 220,
+          "fresh": true,
+          "valid": true,
+          "value": 800,
+          "stop_closed": true,
+          "command": "-",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 16,
+            "healthy_samples": 0
+          }
+        },
+        {
+          "time_ms": 230,
+          "fresh": true,
+          "valid": true,
+          "value": 701,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 16,
+            "healthy_samples": 0
+          }
+        },
+        {
+          "time_ms": 240,
+          "fresh": true,
+          "valid": true,
+          "value": 700,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 16,
+            "healthy_samples": 1
+          }
+        },
+        {
+          "time_ms": 250,
+          "fresh": true,
+          "valid": true,
+          "value": 700,
+          "stop_closed": true,
+          "command": "-",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 16,
+            "healthy_samples": 2
+          }
+        },
+        {
+          "time_ms": 260,
+          "fresh": true,
+          "valid": true,
+          "value": 700,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "READY",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 270,
+          "fresh": true,
+          "valid": true,
+          "value": 700,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "open-stop-loop",
+      "purpose": "Open stop loop dominates an arm request.",
+      "steps": [
+        {
+          "time_ms": 0,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 1
+          }
+        },
+        {
+          "time_ms": 100,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 2
+          }
+        },
+        {
+          "time_ms": 200,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "READY",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 210,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 220,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": false,
+          "command": "A",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 32,
+            "healthy_samples": 0
+          }
+        },
+        {
+          "time_ms": 230,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": false,
+          "command": "R",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 32,
+            "healthy_samples": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "premature-reset",
+      "purpose": "One or two recovered samples cannot clear a sensor fault.",
+      "steps": [
+        {
+          "time_ms": 0,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 1
+          }
+        },
+        {
+          "time_ms": 100,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 2
+          }
+        },
+        {
+          "time_ms": 200,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "READY",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 210,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 220,
+          "fresh": true,
+          "valid": false,
+          "value": 400,
+          "stop_closed": true,
+          "command": "-",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 1,
+            "healthy_samples": 0
+          }
+        },
+        {
+          "time_ms": 230,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 1,
+            "healthy_samples": 1
+          }
+        },
+        {
+          "time_ms": 240,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 1,
+            "healthy_samples": 2
+          }
+        },
+        {
+          "time_ms": 250,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "READY",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        }
+      ]
+    },
+    {
+      "name": "fault-latches-after-good-data",
+      "purpose": "Healthy data and A alone never clear a latched fault.",
+      "steps": [
+        {
+          "time_ms": 0,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 1
+          }
+        },
+        {
+          "time_ms": 100,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 2
+          }
+        },
+        {
+          "time_ms": 200,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "READY",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 210,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 220,
+          "fresh": true,
+          "valid": false,
+          "value": 400,
+          "stop_closed": true,
+          "command": "-",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 1
+          }
+        },
+        {
+          "time_ms": 230,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 1
+          }
+        },
+        {
+          "time_ms": 240,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "-",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 1
+          }
+        },
+        {
+          "time_ms": 250,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "-",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 1
+          }
+        },
+        {
+          "time_ms": 260,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "boot-no-auto-arm",
+      "purpose": "Healthy startup requires R then A; A in BOOT is ignored.",
+      "steps": [
+        {
+          "time_ms": 0,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0
+          }
+        },
+        {
+          "time_ms": 100,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0
+          }
+        },
+        {
+          "time_ms": 200,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0
+          }
+        },
+        {
+          "time_ms": 210,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "READY",
+            "permit": false,
+            "faults": 0
+          }
+        },
+        {
+          "time_ms": 220,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "boot-no-sample",
+      "purpose": "Startup with no data eventually latches STALE.",
+      "steps": [
+        {
+          "time_ms": 0,
+          "fresh": false,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0
+          }
+        },
+        {
+          "time_ms": 499,
+          "fresh": false,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0
+          }
+        },
+        {
+          "time_ms": 500,
+          "fresh": false,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "-",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 4
+          }
+        }
+      ]
+    },
+    {
+      "name": "arm-with-expired-heartbeat",
+      "purpose": "A while READY cannot start with a heartbeat age >=300 ms.",
+      "steps": [
+        {
+          "time_ms": 0,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0
+          }
+        },
+        {
+          "time_ms": 100,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "-",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0
+          }
+        },
+        {
+          "time_ms": 200,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "READY",
+            "permit": false,
+            "faults": 0
+          }
+        },
+        {
+          "time_ms": 300,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "READY",
+            "permit": false,
+            "faults": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "simultaneous-faults",
+      "purpose": "Independent range and stop faults are both retained.",
+      "steps": [
+        {
+          "time_ms": 0,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 1
+          }
+        },
+        {
+          "time_ms": 100,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 2
+          }
+        },
+        {
+          "time_ms": 200,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "READY",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 210,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 220,
+          "fresh": true,
+          "valid": true,
+          "value": 1001,
+          "stop_closed": false,
+          "command": "-",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 34
+          }
+        }
+      ]
+    },
+    {
+      "name": "clock-regression",
+      "purpose": "Backward time is rejected and disables permit.",
+      "steps": [
+        {
+          "time_ms": 0,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 1
+          }
+        },
+        {
+          "time_ms": 100,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 2
+          }
+        },
+        {
+          "time_ms": 200,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "READY",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 210,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 209,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 128,
+            "healthy_samples": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "millis-rollover",
+      "purpose": "Heartbeat deadline holds across uint32 rollover.",
+      "steps": [
+        {
+          "time_ms": 4294967100,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 1
+          }
+        },
+        {
+          "time_ms": 4294967200,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 2
+          }
+        },
+        {
+          "time_ms": 4,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "READY",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 14,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        },
+        {
+          "time_ms": 203,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "-",
+          "expect": {
+            "state": "ACTIVE",
+            "permit": true,
+            "faults": 0
+          }
+        },
+        {
+          "time_ms": 204,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "FAULT",
+            "permit": false,
+            "faults": 8
+          }
+        }
+      ]
+    },
+    {
+      "name": "reboot-starts-disarmed",
+      "purpose": "A new controller begins BOOT even when its first input requests arm.",
+      "steps": [
+        {
+          "time_ms": 9000,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "A",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 1
+          }
+        },
+        {
+          "time_ms": 9100,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "H",
+          "expect": {
+            "state": "BOOT",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 2
+          }
+        },
+        {
+          "time_ms": 9200,
+          "fresh": true,
+          "valid": true,
+          "value": 400,
+          "stop_closed": true,
+          "command": "R",
+          "expect": {
+            "state": "READY",
+            "permit": false,
+            "faults": 0,
+            "healthy_samples": 3
+          }
+        }
+      ]
+    }
+  ]
+}
